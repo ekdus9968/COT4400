@@ -1,7 +1,7 @@
 """
 Team Member: 
 Seyoung Kan (U36444259)
-
+Kaushik Selvakumar (U75300364)
 < Project1 Recursive Peoblem Solving >
 This project focuses only on recursion.
 Project 1 must use recursion as the primary solution technique.
