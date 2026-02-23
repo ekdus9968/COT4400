@@ -1,61 +1,110 @@
 """
-Team Member: 
-Seyoung Kan (U36444259)
-Kaushik Selvakumar (U75300364)
-"""
+COT 4400: Project 1 - Recursive Maze Solver
 
-def is_path(maze, x, y, visited):
+Team Members:
+    -> Seyoung Kan (U36444259)
+    -> Kaushik Selvakumar (U75300364)
+
+Brief Description:
+    -> This project implements a recursive maze solver using backtracking.
+    -> The maze is represented as a 2D grid where 0s represent open paths and 1s represent walls.
+    -> The solver starts from a specified position and attempts to find a path to the destination by exploring all possible directions (right, left, down, up).
+    -> If a valid path is found, it is printed; otherwise, a message indicating that no path exists is displayed.
+"""
+# Checking whether move is valid (inside bounds, not wall, not visited)
+def isValidMove(maze, x, y, visited):
     n = len(maze)
-    return (0 <= x < n and
-            0 <= y < n and
-            maze[x][y] == 0 and
-            not visited[x][y])
-    
-def solve_maze(maze, x, y, end_x, end_y, visited, path):
-    if x == end_x and y == end_y:
+    return (
+        0 <= x < n and
+        0 <= y < n and
+        maze[x][y] == 0 and
+        not visited[x][y]
+    )
+
+# Solving maze recursively using backtracking
+def solveMaze(maze, x, y, endX, endY, visited, path):
+
+    # Checking if current position reaches destination
+    if x == endX and y == endY:
         path.append((x, y))
         return True
-    
-    if not is_path(maze, x, y, visited):
+
+    # Stopping recursion if move is invalid
+    if not isValidMove(maze, x, y, visited):
         return False
-    
+
+    # Marking current cell as visited
     visited[x][y] = True
-    path.append((x,y))
-    
-    
-    if solve_maze(maze, x, y+1, end_x, end_y, visited, path):
+
+    # Adding current cell to path
+    path.append((x, y))
+
+    # Exploring right
+    if solveMaze(maze, x, y + 1, endX, endY, visited, path):
         return True
-    
-    if solve_maze(maze, x, y-1, end_x, end_y, visited, path):
+
+    # Exploring left
+    if solveMaze(maze, x, y - 1, endX, endY, visited, path):
         return True
-    
-    if solve_maze(maze, x+1, y, end_x, end_y, visited, path):
+
+    # Exploring down
+    if solveMaze(maze, x + 1, y, endX, endY, visited, path):
         return True
-    
-    if solve_maze(maze, x - 1, y, end_x, end_y, visited, path):
+
+    # Exploring up
+    if solveMaze(maze, x - 1, y, endX, endY, visited, path):
         return True
-    
+
+    # Backtracking by removing cell from path
     path.pop()
+
+    # Unmarking cell to allow alternate path exploration
+    visited[x][y] = False
+
     return False
 
-#Testing 
-maze = [
+# MAZE SOLVER IMPLEMENTATION VALIDATION TEST CASES
+
+# Running one test case and printing output
+def runTest(testName, maze, startX, startY, endX, endY):
+    print(f"\n--- {testName} ---")
+
+    n = len(maze)
+    visited = [[False] * n for _ in range(n)]
+    path = []
+
+    if solveMaze(maze, startX, startY, endX, endY, visited, path):
+        print("Path Found:")
+        print(path)
+    else:
+        print("No Path Exists")
+
+# Test Case 1 - Valid Path Exists
+maze1 = [
     [0, 1, 0, 0],
     [0, 0, 0, 1],
-    [1, 1, 0, 0], 
+    [1, 1, 0, 0],
     [0, 0, 0, 0]
 ]
+runTest("Test Case 1 - Valid Path Exists", maze1, 0, 0, 3, 3)
 
-n = len(maze)
-visited = [[False] * n for _ in range(n)]
-path =[]
+# Test Case 2 - No Possible Path
+maze2 = [
+    [0, 1, 1],
+    [1, 1, 1],
+    [1, 1, 0]
+]
+runTest("Test Case 2 - No Possible Path", maze2, 0, 0, 2, 2)
 
-start_x, start_y = 0, 0
-end_x, end_y = 3, 3
+# Test Case 3 - Start Equals End
+maze3 = [
+    [0, 1],
+    [0, 0]
+]
+runTest("Test Case 3 - Start Equals End", maze3, 0, 0, 0, 0)
 
-if solve_maze(maze, start_x, start_y, end_x, end_y, visited, path):
-    print("Path Found(Start at(0,0) to End at (3,3)): ")
-    print(path)
-else: 
-    print("No Path Exists")
-    
+# Test Case 4 - 1x1 Maze
+maze4 = [
+    [0]
+]
+runTest("Test Case 4 - 1x1 Maze", maze4, 0, 0, 0, 0)
